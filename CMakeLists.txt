@@ -6,10 +6,10 @@ find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 configure_file(version.h.in version.h)
 
-add_executable(ip_filter main.cpp)
+add_executable(ip_filter filters.h main.cpp)
 
-set (TEST test_${PROJECT})
-add_executable (${TEST} test_ip_filter.cpp)
+set (TEST test_ip_filter)
+add_executable (${TEST} ip_pool_struct.h test_ip_filter.cpp)
 
 set_target_properties (ip_filter ${TEST} PROPERTIES
 	CXX_STANDARD 14
