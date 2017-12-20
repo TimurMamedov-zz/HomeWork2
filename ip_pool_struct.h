@@ -1,60 +1,54 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <tuple>
 
-using IP_type = std::vector<std::string>;
+using firstByte_type = unsigned int;
+using secondByte_type = unsigned int;
+using thirdByte_type = unsigned int;
+using fourthByte_type = unsigned int;
+
+using IP_type = std::tuple<firstByte_type, secondByte_type, thirdByte_type, fourthByte_type>;
 
 struct IP : public IP_type
 {
-    bool operator!=(const IP &rhs) const
-    {
-        if(this->size() != rhs.size())
-            return true;
-        else
-        {
-            for(size_t i = 0; i < rhs.size(); i++)
-            {
-                if(this->at(i) != rhs.at(i))
-                    return true;
-            }
-        }
-        return false;
-    }
+    IP(const firstByte_type& firstbyte, const secondByte_type& secondbyte,
+       const thirdByte_type& thirdbyte, const fourthByte_type& fourthbyte)
+        :IP_type(firstbyte, secondbyte, thirdbyte, fourthbyte){}
 
     friend std::ostream &operator<<(std::ostream &os, const IP &ip)
     {
-        if(ip.size() == 4)
-            os << ip[0] << "." << ip[1] << "." << ip[2] << "." << ip[3] ;
+        os << std::get<0>(ip)<< "." << std::get<1>(ip) << "." << std::get<2>(ip) << "." << std::get<3>(ip) ;
         return os;
     }
 };
 
 using IP_Pool_type = std::vector<IP>;
 
-struct IP_Pool : public IP_Pool_type
+struct Fixture
 {
-    bool operator!=(const IP_Pool &rhs) const
+    Fixture()
     {
-        if(this->size() != rhs.size())
-            return true;
-        else
-        {
-            for(size_t i = 0; i < rhs.size(); i++)
-            {
-                if(this->at(i) != rhs.at(i))
-                    return true;
-            }
-        }
-        return false;
+        IP tuple1_temp(213, 219, 115, 76);
+        IP tuple2_temp(213, 213, 103, 190);
+        IP tuple3_temp(213, 213, 102, 167);
+        IP tuple4_temp(213, 213, 102, 166);
+
+        IP tuple5_temp(46, 70, 1, 166);
+        IP tuple6_temp(46, 70, 1, 165);
+
+        IP tuple7_temp(1, 213, 102, 166);
+        IP tuple8_temp(1, 213, 46, 166);
+
+        value.push_back(tuple3_temp);
+        value.push_back(tuple1_temp);
+        value.push_back(tuple4_temp);
+        value.push_back(tuple2_temp);
+        value.push_back(tuple7_temp);
+        value.push_back(tuple6_temp);
+        value.push_back(tuple8_temp);
+        value.push_back(tuple5_temp);
     }
 
-    friend std::ostream &operator<<(std::ostream &os, const IP_Pool &ip_pool)
-    {
-        for(const auto& ip: ip_pool)
-        {
-            if(ip.size() == 4)
-                os << ip << "\n";
-        }
-        return os;
-    }
+    IP_Pool_type value;
 };

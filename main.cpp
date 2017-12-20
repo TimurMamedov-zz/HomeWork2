@@ -3,10 +3,16 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <tuple>
 
 #include "filters.h"
 
-using IP_pool_type = std::vector<std::vector<std::string> >;
+using firstByte_type = unsigned int;
+using secondByte_type = unsigned int;
+using thirdByte_type = unsigned int;
+using fourthByte_type = unsigned int;
+
+using IP_pool_type = std::vector<std::tuple<firstByte_type, secondByte_type, thirdByte_type, fourthByte_type> >;
 
 // ("",  '.') -> [""]
 // ("11", '.') -> ["11"]
@@ -36,18 +42,10 @@ auto split(const std::string &str, char d)
 
 auto print_IP_pool = [](auto&& ip_pool)
 {
-    for(auto ip = ip_pool.cbegin(); ip != ip_pool.cend(); ++ip)
+    for(const auto& tuple: ip_pool)
     {
-        for(auto ip_part = ip->cbegin(); ip_part != ip->cend(); ++ip_part)
-        {
-            if (ip_part != ip->cbegin())
-            {
-                std::cout << ".";
-
-            }
-            std::cout << *ip_part;
-        }
-        std::cout << std::endl;
+        std::cout << std::get<0>(tuple) << "." << std::get<1>(tuple) << "." <<
+                 std::get<2>(tuple) << "." << std::get<3>(tuple) <<std::endl;
     }
 };
 
@@ -60,25 +58,26 @@ int main(int argc, char const *argv[])
         for(std::string line; std::getline(std::cin, line);)
         {
             auto&& v = split(line, '\t');
-            ip_pool.emplace_back(split(v.at(0), '.'));
+            auto&& bytes = split(v.at(0), '.');
+            assert(bytes.size() == 4);
+            ip_pool.emplace_back(std::make_tuple(std::stoi(bytes[0]), std::stoi(bytes[1]),
+                    std::stoi(bytes[2]), std::stoi(bytes[3])));
         }
 
-        filter(ip_pool);
-        print_IP_pool(ip_pool);
+        reverse_lexicographically_sort(ip_pool);
 
-//        std::cout << std::endl << std::endl;
         auto&& ip1 = filter(ip_pool, 1);
 
-        print_IP_pool(ip1);
-
-//        std::cout << std::endl << std::endl;
         auto&& ip46_70 = filter(ip_pool, 46, 70);
 
-        print_IP_pool(ip46_70);
-
-//        std::cout << std::endl << std::endl;
         auto&& ip_any46 = filter_any(ip_pool, 46);
 
+        print_IP_pool(ip_pool);
+        //        std::cout << std::endl << std::endl;
+        print_IP_pool(ip1);
+        //        std::cout << std::endl << std::endl;
+        print_IP_pool(ip46_70);
+        //        std::cout << std::endl << std::endl;
         print_IP_pool(ip_any46);
     }
     catch(const std::exception &e)

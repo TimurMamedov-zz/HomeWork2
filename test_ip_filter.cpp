@@ -1,58 +1,96 @@
 #define BOOST_TEST_MODULE ip_filter_test
 
 #include <boost/test/unit_test.hpp>
-#include <vector>
+#include "ip_pool_struct.h"
 
 #include "version.h"
 #include "filters.h"
-#include "ip_pool_struct.h"
 
-BOOST_AUTO_TEST_SUITE(Test_IP_Filter)
 
 BOOST_AUTO_TEST_CASE(version_test)
 {
     BOOST_CHECK( version() > 0 );
 }
 
-BOOST_AUTO_TEST_CASE(reverse_lexicographically_sort_test)
+BOOST_AUTO_TEST_SUITE(Test_IP_Filter)
+
+BOOST_FIXTURE_TEST_CASE(reverse_lexicographically_sort_test, Fixture)
 {
-    IP_Pool vec1, expected;
-    IP vec1_temp, vec2_temp, vec3_temp, vec4_temp;
-    vec1_temp.emplace_back(std::string("213"));
-    vec1_temp.emplace_back(std::string("219"));
-    vec1_temp.emplace_back(std::string("115"));
-    vec1_temp.emplace_back(std::string("76"));
+    IP_Pool_type expected;
 
-    vec2_temp.emplace_back(std::string("213"));
-    vec2_temp.emplace_back(std::string("213"));
-    vec2_temp.emplace_back(std::string("103"));
-    vec2_temp.emplace_back(std::string("190"));
+    IP tuple1_temp(213, 219, 115, 76);
+    IP tuple2_temp(213, 213, 103, 190);
+    IP tuple3_temp(213, 213, 102, 167);
+    IP tuple4_temp(213, 213, 102, 166);
 
-    vec3_temp.emplace_back(std::string("213"));
-    vec3_temp.emplace_back(std::string("213"));
-    vec3_temp.emplace_back(std::string("102"));
-    vec3_temp.emplace_back(std::string("167"));
+    IP tuple5_temp(46, 70, 1, 166);
+    IP tuple6_temp(46, 70, 1, 165);
 
-    vec4_temp.emplace_back(std::string("213"));
-    vec4_temp.emplace_back(std::string("213"));
-    vec4_temp.emplace_back(std::string("102"));
-    vec4_temp.emplace_back(std::string("166"));
+    IP tuple7_temp(1, 213, 102, 166);
+    IP tuple8_temp(1, 213, 46, 166);
 
-    vec1.push_back(vec3_temp);
-    vec1.push_back(vec1_temp);
-    vec1.push_back(vec4_temp);
-    vec1.push_back(vec2_temp);
-    filter(vec1);
+    expected.push_back(tuple1_temp);
+    expected.push_back(tuple2_temp);
+    expected.push_back(tuple3_temp);
+    expected.push_back(tuple4_temp);
+    expected.push_back(tuple5_temp);
+    expected.push_back(tuple6_temp);
+    expected.push_back(tuple7_temp);
+    expected.push_back(tuple8_temp);
 
-    expected.push_back(vec1_temp);
-    expected.push_back(vec2_temp);
+    reverse_lexicographically_sort(value);
 
-    expected.push_back(vec4_temp);
-    expected.push_back(vec3_temp);
+    BOOST_CHECK_EQUAL_COLLECTIONS(value.begin(), value.end(), expected.begin(), expected.end());
+}
 
-    BOOST_REQUIRE_EQUAL(vec1.size(), expected.size());
+BOOST_FIXTURE_TEST_CASE(filter_by_first_byte_test, Fixture)
+{
+    IP_Pool_type expected;
 
-    BOOST_CHECK_EQUAL_COLLECTIONS(vec1.begin(), vec1.begin(), expected.begin(), expected.begin());
+    IP tuple7_temp(1, 213, 102, 166);
+    IP tuple8_temp(1, 213, 46, 166);
+
+    expected.push_back(tuple7_temp);
+    expected.push_back(tuple8_temp);
+
+    reverse_lexicographically_sort(value);
+    auto&& ip_1 = filter(value, 1);
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(ip_1.begin(), ip_1.end(), expected.begin(), expected.end());
+}
+
+BOOST_FIXTURE_TEST_CASE(filter_by_first_and_second_bytes_test, Fixture)
+{
+    IP_Pool_type expected;
+
+    IP tuple5_temp(46, 70, 1, 166);
+    IP tuple6_temp(46, 70, 1, 165);
+
+    expected.push_back(tuple5_temp);
+    expected.push_back(tuple6_temp);
+
+    reverse_lexicographically_sort(value);
+    auto&& ip_46_70 = filter(value, 46, 70);
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(ip_46_70.begin(), ip_46_70.end(), expected.begin(), expected.end());
+}
+
+BOOST_FIXTURE_TEST_CASE(filter_by_any_byte_test, Fixture)
+{
+    IP_Pool_type expected;
+
+    IP tuple5_temp(46, 70, 1, 166);
+    IP tuple6_temp(46, 70, 1, 165);
+    IP tuple8_temp(1, 213, 46, 166);
+
+    expected.push_back(tuple5_temp);
+    expected.push_back(tuple6_temp);
+    expected.push_back(tuple8_temp);
+
+    reverse_lexicographically_sort(value);
+    auto&& ip_any_46 = filter_any(value, 46);
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(ip_any_46.begin(), ip_any_46.end(), expected.begin(), expected.end());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
