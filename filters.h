@@ -12,7 +12,8 @@ using anyByte_type = unsigned int;
 template<typename Container>
 void reverse_lexicographically_sort(Container &&conteiner)
 {
-    std::sort(conteiner.begin(), conteiner.end(), std::greater<std::remove_reference_t<decltype(conteiner[0])> >());
+    using type = std::remove_reference_t<decltype(conteiner[0])>;
+    std::sort(conteiner.begin(), conteiner.end(), std::greater<type>());
 //    std::sort(conteiner.begin(), conteiner.end(), [](const auto &a, const auto &b){ return a > b; });
 }
 
