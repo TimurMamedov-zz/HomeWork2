@@ -12,7 +12,7 @@ template<typename Container>
 void reverse_lexicographically_sort(Container &&conteiner)
 {
 //    std::sort(conteiner.begin(), conteiner.end(), std::greater<const decltype(conteiner[0]) >());
-    std::sort(conteiner.begin(), conteiner.end(), std::greater<const decltype(conteiner[0]) >());
+    std::sort(conteiner.begin(), conteiner.end(), [](const auto &a, const auto &b){ return a > b; });
 }
 
 //filter by first byte
