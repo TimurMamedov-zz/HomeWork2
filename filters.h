@@ -11,7 +11,7 @@ using anyByte_type = unsigned int;
 template<typename Container>
 void reverse_lexicographically_sort(Container &&conteiner)
 {
-    std::sort(conteiner.begin(), conteiner.end(), std::greater<std::remove_reference_t<decltype(conteiner[0])> >());
+    std::sort(conteiner.begin(), conteiner.end(), std::greater<const decltype(conteiner[0]) >());
 }
 
 //filter by first byte
