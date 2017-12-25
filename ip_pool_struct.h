@@ -12,8 +12,8 @@ using IP_type = std::tuple<firstByte_type, secondByte_type, thirdByte_type, four
 
 struct IP : public IP_type
 {
-    IP(const firstByte_type& firstbyte, const secondByte_type& secondbyte,
-       const thirdByte_type& thirdbyte, const fourthByte_type& fourthbyte)
+    IP(firstByte_type&& firstbyte, secondByte_type&& secondbyte,
+       thirdByte_type&& thirdbyte, fourthByte_type&& fourthbyte)
         :IP_type(firstbyte, secondbyte, thirdbyte, fourthbyte){}
 
     friend std::ostream &operator<<(std::ostream &os, const IP &ip)
