@@ -10,7 +10,7 @@ using fourthByte_type = unsigned int;
 
 using IP_type = std::tuple<firstByte_type, secondByte_type, thirdByte_type, fourthByte_type>;
 
-struct IP : public IP_type
+struct IP : IP_type
 {
     IP(firstByte_type&& firstbyte, secondByte_type&& secondbyte,
        thirdByte_type&& thirdbyte, fourthByte_type&& fourthbyte)
