@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.2)
 
 project(ip_filter VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
-project(ip_filter)
+#project(ip_filter)
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 configure_file(version.h.in version.h)
