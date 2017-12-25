@@ -73,11 +73,11 @@ int main(int argc, char const *argv[])
         auto&& ip_any46 = filter_any(ip_pool, 46);
 
         print_IP_pool(ip_pool);
-        //        std::cout << std::endl << std::endl;
+//                std::cout << std::endl << std::endl;
         print_IP_pool(ip1);
-        //        std::cout << std::endl << std::endl;
+//                std::cout << std::endl << std::endl;
         print_IP_pool(ip46_70);
-        //        std::cout << std::endl << std::endl;
+//                std::cout << std::endl << std::endl;
         print_IP_pool(ip_any46);
     }
     catch(const std::exception &e)
