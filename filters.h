@@ -2,6 +2,7 @@
 #define FILTERS_H
 
 #include <assert.h>
+#include <functional>
 #include <algorithm>
 
 using firstByte_type = unsigned int;
@@ -11,8 +12,8 @@ using anyByte_type = unsigned int;
 template<typename Container>
 void reverse_lexicographically_sort(Container &&conteiner)
 {
-//    std::sort(conteiner.begin(), conteiner.end(), std::greater<const decltype(conteiner[0]) >());
-    std::sort(conteiner.begin(), conteiner.end(), [](const auto &a, const auto &b){ return a > b; });
+    std::sort(conteiner.begin(), conteiner.end(), std::greater<std::remove_reference_t<decltype(conteiner[0])> >());
+//    std::sort(conteiner.begin(), conteiner.end(), [](const auto &a, const auto &b){ return a > b; });
 }
 
 //filter by first byte
